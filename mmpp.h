@@ -26,8 +26,10 @@ vector<vector<double> > mmpp(vector<vector<double> > m1,vector<vector<double> > 
         vector<vector<double> > p;
         if(m1.size() != m2[0].size()){cout<<m1.size()<<" "<<m2[0].size()<<endl; p.clear(); return p;}
         vector<vector<double> > m = tp(m2);
+	struct timespec start, finish;
+	double elapsed;
 	p.resize(m1.size());
-	const clock_t start = clock();
+	clock_gettime(CLOCK_MONOTONIC, &start);
 	#pragma omp parallel for
 	for(int i = 0; i<m1.size(); i++){
 		vector<double> temp;
@@ -36,7 +38,10 @@ vector<vector<double> > mmpp(vector<vector<double> > m1,vector<vector<double> > 
 		}
 		p[i] = temp;
         }
-	cout<<(double)(clock()-start)/CLOCKS_PER_SEC<<endl;
+	clock_gettime(CLOCK_MONOTONIC, &finish);
+	elapsed = (finish.tv_sec - start.tv_sec);
+	elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+	cout<<elapsed<<endl;
         return p;
 }
 #endif

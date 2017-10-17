@@ -8,18 +8,21 @@
 using namespace std;
 vector<double> mvpp(vector<vector<double> > m,vector <double> v){
         vector<double> p;
-        if(m[0].size() != v.size()){p.clear(); return p;}
+        struct timespec start, finish;
+	double elapsed;
+	if(m[0].size() != v.size()){p.clear(); return p;}
         #pragma omp parallel sections
 	{
-	clock_t start = clock();
 	 #pragma omp section
 	 {
-	  clock_t start = clock();
+	  clock_gettime(CLOCK_MONOTONIC, &start);
 	  for(int i = 0; i<m.size(); i++){
         	p.push_back(dotp(m[i],v));
           }
-	  clock_t end = clock();
-          cout<<(double)(end-start)/CLOCKS_PER_SEC<<endl; 
+	  clock_gettime(CLOCK_MONOTONIC, &finish);
+	  elapsed = (finish.tv_sec - start.tv_sec);
+	  elapsed += (finish.tv_nsec = start.tv_nsec) / 1000000000.0;
+          cout<<elapsed<<endl; 
 	 }
 	}
         return p;
